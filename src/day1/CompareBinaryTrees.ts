@@ -6,11 +6,9 @@ export default function compare(
     if (a === null && b === null) {
         return true;
     }
-
     if (a === null || b === null) {
         return false;
     }
-
     if (a.value !== b.value) {
         return false;
     }
