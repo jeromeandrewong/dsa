@@ -3,12 +3,18 @@ export default function compare(
     b: BinaryNode<number> | null,
 ): boolean {
     // base cases
+
+    // check for structure
     if (a === null && b === null) {
         return true;
     }
+
+    // check for structure
     if (a === null || b === null) {
         return false;
     }
+
+    // check for value
     if (a.value !== b.value) {
         return false;
     }
