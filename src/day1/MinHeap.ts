@@ -3,73 +3,82 @@ export default class MinHeap {
     private data: number[];
 
     constructor() {
-        this.data = [];
         this.length = 0;
+        this.data = [];
     }
 
+    // insert bottom and heapify up until correct location
     insert(value: number): void {
+        // add node to end of arr
         this.data.push(value);
+        // heapify up from bottom to the correct location to insert
         this.heapifyUp(this.length);
         this.length++;
     }
+
+    // deleting the min item out of the heap
     delete(): number {
-        if (this.length === 0) {
-            return -1;
-        }
+        if (this.length === 0) return -1;
 
         const out = this.data[0];
         this.length--;
-
         if (this.length === 0) {
             this.data = [];
             return out;
         }
 
+        // move lowest node to the top of heap
         this.data[0] = this.data[this.length];
         this.heapifyDown(0);
         return out;
     }
 
-    private heapifyDown(idx: number): void {
-        const lIdx = this.getLeftIdx(idx);
-        const rIdx = this.getRightIdx(idx);
+    private heapifyDown = (idx: number): void => {
+        const li = this.getLeftIdx(idx);
+        const ri = this.getRightIdx(idx);
 
-        if (idx >= this.length || lIdx >= this.length) {
-            return;
+        if (idx > this.length || li > this.length) return;
+
+        const lv = this.data[li];
+        const rv = this.data[ri];
+        const pv = this.data[idx];
+
+        // logic to traverse to left or right child
+        if (pv > lv && lv < rv) {
+            // swap parent with lv
+            this.data[idx] = lv;
+            this.data[li] = pv;
+            // recurse
+            this.heapifyDown(li);
         }
-
-        const lVal = this.data[lIdx];
-        const rVal = this.data[rIdx];
-        const v = this.data[idx];
-
-        if (lVal > rVal && v > rVal) {
-            this.data[idx] = rVal;
-            this.data[rIdx] = v;
-            this.heapifyDown(rIdx);
-        } else if (lVal < rVal && v > lVal) {
-            this.data[idx] = lVal;
-            this.data[lIdx] = v;
-            this.heapifyDown(lIdx);
+        if (pv > rv && rv < lv) {
+            // swap parent with rv
+            this.data[idx] = rv;
+            this.data[ri] = pv;
+            // recurse
+            this.heapifyDown(ri);
         }
-    }
+    };
 
-    private heapifyUp(idx: number): void {
-        if (idx === 0) {
-            return;
+    private heapifyUp = (idx: number): void => {
+        // base case
+        if (idx === 0) return;
+
+        const pIdx = this.getParentIdx(idx);
+        const pVal = this.data[pIdx];
+        const cVal = this.data[idx];
+
+        // keep bubbling up until parent value is smaller than current value
+        if (pVal > cVal) {
+            // swap parent and child
+            this.data[pIdx] = cVal;
+            this.data[idx] = pVal;
+            // recursion
+            this.heapifyUp(pIdx);
         }
-        const parentIdx = this.getParentIdx(idx);
-        const parentVal = this.data[parentIdx];
-        const v = this.data[idx];
+    };
 
-        if (parentVal > v) {
-            this.data[idx] = parentVal;
-            this.data[parentIdx] = v;
-            this.heapifyUp(parentIdx);
-        }
-    }
-
-    // retrieve parent idx from any idx
-    private getParentIdx = (idx: number) => Math.floor((idx - 1) / 2);
-    private getLeftIdx = (idx: number) => idx * 2 + 1;
-    private getRightIdx = (idx: number) => idx * 2 + 2;
+    private getParentIdx = (idx: number): number => Math.floor((idx - 1) / 2);
+    private getLeftIdx = (parentIdx: number): number => parentIdx * 2 + 1;
+    private getRightIdx = (parentIdx: number): number => parentIdx * 2 + 2;
 }
